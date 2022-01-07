@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+using System.IO;
+
 
 public class MainManager : MonoBehaviour
 {
@@ -13,19 +16,24 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public GameObject GameOverText;
     
+    public TextMeshProUGUI highscoreText;
+    public TextMeshProUGUI currentUserText;
+
     private bool m_Started = false;
     private int m_Points;
-    
+    public int score;
+
     private bool m_GameOver = false;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        CurrentUser();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+        int[] pointCountArray = new [] {22,22,22,2,5,5};
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -40,6 +48,7 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        UpdateScore();
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -54,12 +63,18 @@ public class MainManager : MonoBehaviour
             }
         }
         else if (m_GameOver)
-        {
+        {           
             if (Input.GetKeyDown(KeyCode.Space))
-            {
+            {    
+                UpdateScore();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+    }
+    
+    public void ExitToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     void AddPoint(int point)
@@ -73,4 +88,57 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
+
+    private void UpdateScore()
+    {
+        highscoreText.text = "Best Score : " + PlayerPrefs.GetString("HighScorer") + PlayerPrefs.GetInt("HighScore");
+        if (m_Points > PlayerPrefs.GetInt("HighScore", 0) && PlayerPrefs.GetString("CurrentUser") != PlayerPrefs.GetString("HighScorer"))   // zero is default value;
+        {
+            PlayerPrefs.SetInt("HighScore",m_Points);
+            PlayerPrefs.SetString("HighScorer",MenuUIHandler.instance.playerName);
+            highscoreText.text = "BestScore : " + PlayerPrefs.GetString("HighScorer") + " " + PlayerPrefs.GetInt("HighScore");
+        }
+    }
+    void CurrentUser()
+    {
+        currentUserText.text = "Current User : " + PlayerPrefs.GetString("CurrentUser");
+    }
+
+    // [System.Serializable]
+    // public class SaveData
+    // {
+    //     public int m_Points;
+    // }
+
+    // public void SavePoints()
+    // {
+    //     SaveData data = new SaveData();
+    //     data.m_Points = m_Points;   // this TeamColor is of mainManager class;    // this is used to assign this variable 
+
+    //     string json = JsonUtility.ToJson(data);
+
+    //     File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+
+    //     score = data.m_Points;
+
+    // }
+
+    // public void LoadPoints()
+    // {
+    //     string path = Application.persistentDataPath + "/savefile.json";
+    //     if(File.Exists(path))
+    //     {
+    //         string json = File.ReadAllText(path);
+    //         SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+    //         m_Points = data.m_Points;
+            
+    //         if(m_Points > score)
+    //         {
+    //             newHighScore = score;
+    //         }
+    //     }
+    // }
 }
+
