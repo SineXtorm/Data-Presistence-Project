@@ -29,11 +29,12 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        highscoreText.text = "BestScore : " + PlayerPrefs.GetString("HighScorer") + " : " + PlayerPrefs.GetInt("HighScore");
         CurrentUser();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
-        int[] pointCountArray = new [] {22,22,22,2,5,5};
+        int[] pointCountArray = new [] {222,222,222,222,225,5};
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -48,6 +49,7 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        highscoreText.text = "BestScore : " + PlayerPrefs.GetString("HighScorer") + " : " + PlayerPrefs.GetInt("HighScore");
         UpdateScore();
         if (!m_Started)
         {
@@ -91,13 +93,11 @@ public class MainManager : MonoBehaviour
 
 
     private void UpdateScore()
-    {
-        highscoreText.text = "Best Score : " + PlayerPrefs.GetString("HighScorer") + PlayerPrefs.GetInt("HighScore");
-        if (m_Points > PlayerPrefs.GetInt("HighScore", 0) && PlayerPrefs.GetString("CurrentUser") != PlayerPrefs.GetString("HighScorer"))   // zero is default value;
+    {  
+        if (m_Points > PlayerPrefs.GetInt("HighScore", 0))   // zero is default value;
         {
             PlayerPrefs.SetInt("HighScore",m_Points);
-            PlayerPrefs.SetString("HighScorer",MenuUIHandler.instance.playerName);
-            highscoreText.text = "BestScore : " + PlayerPrefs.GetString("HighScorer") + " " + PlayerPrefs.GetInt("HighScore");
+            PlayerPrefs.SetString("HighScorer",MenuUIHandler.instance.playerName);        
         }
     }
     void CurrentUser()
@@ -105,40 +105,5 @@ public class MainManager : MonoBehaviour
         currentUserText.text = "Current User : " + PlayerPrefs.GetString("CurrentUser");
     }
 
-    // [System.Serializable]
-    // public class SaveData
-    // {
-    //     public int m_Points;
-    // }
-
-    // public void SavePoints()
-    // {
-    //     SaveData data = new SaveData();
-    //     data.m_Points = m_Points;   // this TeamColor is of mainManager class;    // this is used to assign this variable 
-
-    //     string json = JsonUtility.ToJson(data);
-
-    //     File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-
-    //     score = data.m_Points;
-
-    // }
-
-    // public void LoadPoints()
-    // {
-    //     string path = Application.persistentDataPath + "/savefile.json";
-    //     if(File.Exists(path))
-    //     {
-    //         string json = File.ReadAllText(path);
-    //         SaveData data = JsonUtility.FromJson<SaveData>(json);
-
-    //         m_Points = data.m_Points;
-            
-    //         if(m_Points > score)
-    //         {
-    //             newHighScore = score;
-    //         }
-    //     }
-    // }
 }
 

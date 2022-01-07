@@ -35,7 +35,17 @@ public class MenuUIHandler : MonoBehaviour
         playerName = inputName.text;
         PlayerPrefs.SetString("CurrentUser", playerName);
         SceneManager.LoadScene(1);
-        Debug.Log(instance.playerName);
+    }
+
+    public void ResetEveryThing()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
     }
 
     public void Exit()
@@ -46,16 +56,4 @@ public class MenuUIHandler : MonoBehaviour
         Application.Quit();
 #endif
     }
-
-    // [System.Serializable]
-    // public class SaveData
-    // {
-    //     public string playerName;
-    // }
-
-    // public void SaveName()
-    // {
-    //     SaveData data = new SaveData();
-    //     data.playerName = playerName;
-    // }
 }
